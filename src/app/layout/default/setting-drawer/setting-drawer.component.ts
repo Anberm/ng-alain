@@ -38,6 +38,10 @@ const DEFAULT_COLORS = [
     key: 'purple',
     color: '#722ED1',
   },
+  {
+    key: 'black',
+    color: '#001529',
+  },
 ];
 const DEFAULT_VARS = {
   'primary-color': { label: '主颜色', type: 'color', default: '#1890ff' },
@@ -197,6 +201,7 @@ const DEFAULT_VARS = {
   // tslint:disable-next-line:component-selector
   selector: 'setting-drawer',
   templateUrl: './setting-drawer.component.html',
+  // tslint:disable-next-line: no-host-metadata-property
   host: {
     '[class.setting-drawer]': 'true',
   },
@@ -296,7 +301,7 @@ export class SettingDrawerComponent {
     this.settingSrv.setLayout(name, value);
   }
 
-  private resetData(nowData?: Object, run = true) {
+  private resetData(nowData?: {}, run = true) {
     nowData = nowData || {};
     const data = deepCopy(DEFAULT_VARS);
     Object.keys(data).forEach(key => {

@@ -11,14 +11,14 @@ import {
   Inject,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { Router, NavigationEnd, RouteConfigLoadStart, NavigationError, NavigationCancel } from '@angular/router';
+import { Router, NavigationEnd, RouteConfigLoadStart, RouteConfigLoadEnd, NavigationError, NavigationCancel } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { updateHostClass } from '@delon/util';
 import { SettingsService } from '@delon/theme';
-
 import { environment } from '@env/environment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { SettingDrawerComponent } from './setting-drawer/setting-drawer.component';
 
 @Component({
@@ -27,7 +27,7 @@ import { SettingDrawerComponent } from './setting-drawer/setting-drawer.componen
 })
 export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
-  @ViewChild('settingHost', { read: ViewContainerRef })
+  @ViewChild('settingHost', { read: ViewContainerRef, static: true })
   private settingHost: ViewContainerRef;
   isFetching = false;
 
@@ -52,12 +52,14 @@ export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy 
         }
         return;
       }
-      if (!(evt instanceof NavigationEnd)) {
+      if (!(evt instanceof NavigationEnd || evt instanceof RouteConfigLoadEnd)) {
         return;
       }
-      setTimeout(() => {
-        this.isFetching = false;
-      }, 100);
+      if (this.isFetching) {
+        setTimeout(() => {
+          this.isFetching = false;
+        }, 100);
+      }
     });
   }
 
@@ -75,7 +77,7 @@ export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit(): void {
     // Setting componet for only developer
-    if (!environment.production) {
+    if (true) {
       setTimeout(() => {
         const settingFactory = this.resolver.resolveComponentFactory(SettingDrawerComponent);
         this.settingHost.createComponent(settingFactory);

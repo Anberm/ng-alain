@@ -31,7 +31,7 @@ export class ProTableListComponent implements OnInit {
     { index: 2, text: '已上线', value: false, type: 'success', checked: false },
     { index: 3, text: '异常', value: false, type: 'error', checked: false },
   ];
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
   columns: STColumn[] = [
     { title: '', index: 'key', type: 'checkbox' },
@@ -94,7 +94,9 @@ export class ProTableListComponent implements OnInit {
   getData() {
     this.loading = true;
     this.q.statusList = this.status.filter(w => w.checked).map(item => item.index);
-    if (this.q.status !== null && this.q.status > -1) this.q.statusList.push(this.q.status);
+    if (this.q.status !== null && this.q.status > -1) {
+      this.q.statusList.push(this.q.status);
+    }
     this.http
       .get('/rule', this.q)
       .pipe(
